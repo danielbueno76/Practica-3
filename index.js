@@ -43,10 +43,8 @@ worldCup.summaries.forEach(stageResults => {
         console.log(`${result.homeTeam} ${result.homeGoals} - ${result.awayGoals} ${result.awayTeam} => ${wonTeam}`)
     })
     i = i /2
-    if (i == 1) {
-        console.log(`===============================================`)
-        console.log(`¡${wonTeam} campeón del mundo!`)
-        console.log(`===============================================`)
-    }
-
 })
+
+console.log(`===============================================`)
+console.log(`¡${wonTeam} campeón del mundo!`)
+console.log(`===============================================`)
