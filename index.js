@@ -14,14 +14,39 @@ const worldCup = new worldCupKnockout('World Cup', worldCupTeams)
 worldCup.scheduleStage()
 
 // Show the knockout stages although it is not mandatory. Just for clarification
+// let i = worldCupTeams.length
+// worldCup.matchDaysStage.forEach(matchDay => {
+//     const stage = namesStages[i]
+//     console.log(`===== ${stage} =====`)
+//     matchDay.forEach(match => {
+//         const home = match[LOCAL_TEAM]
+//         const away = match[AWAY_TEAM]
+//         console.log(`${home} vs ${away}`)
+//     })
+//     i = i /2
+// })
+
+console.log(`===============================================`)
+console.log(`==== COMIENZO DE LA FASE DE ELIMINATORIAS =====`)
+console.log(`===============================================`)
+
+// Start the world cup
+worldCup.start()
+
 let i = worldCupTeams.length
-worldCup.matchDaysStage.forEach(matchDay => {
+let wonTeam = undefined
+worldCup.summaries.forEach(stageResults => {
     const stage = namesStages[i]
     console.log(`===== ${stage} =====`)
-    matchDay.forEach(match => {
-        const home = match[LOCAL_TEAM]
-        const away = match[AWAY_TEAM]
-        console.log(`${home} vs ${away}`)
+    stageResults.forEach(result => {
+        wonTeam = worldCup.getWonTeam(result)
+        console.log(`${result.homeTeam} ${result.homeGoals} - ${result.awayGoals} ${result.awayTeam} => ${wonTeam}`)
     })
     i = i /2
+    if (i == 1) {
+        console.log(`===============================================`)
+        console.log(`¡${wonTeam} campeón del mundo!`)
+        console.log(`===============================================`)
+    }
+
 })

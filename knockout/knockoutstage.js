@@ -23,8 +23,24 @@ export default class KnockoutPhase {
     }
 
     setupTeams(teamNames) {
-        this.teams = teamNames
+        this.teams = []
+        for (const teamName of teamNames) {
+            const team = this.customizeTeam(teamName)
+            this.teams.push(team)
+        }
         this.teams.shuffle()
+    }
+
+    customizeTeam(teamName) {
+        return {
+            name: teamName,
+            goalsFor: 0,
+            goalsAgainst: 0
+        }
+    }
+
+    getTeamForName(name) {
+        return this.teams.find(team => team.name == name)
     }
 
     scheduleStage(){
@@ -33,32 +49,97 @@ export default class KnockoutPhase {
 
             this.matchDaysStage = this.matchDaysStage.concat(newStage)
         }
+        this.setFirstStageTeams(this.matchDaysStage[0])// In the first stage we assign the team names
     }
 
-    createStage(numberStage) {
+    createStage(numberStages) {
         const newStage = []
-        this.initStage(newStage, numberStage)
-        if (numberStage == (this.teams.length/2))
-            this.setFirstStageTeams(newStage)
+        this.initStage(newStage, numberStages)
         return newStage
     }
 
-    initStage(newStage, numberStage) {
-        const numberOfTeamsPerStage = numberStage
+    initStage(newStage, numberStages) {
         const matchStage = []
-        for (let i = 0; i < numberOfTeamsPerStage; i++) {
+        for (let i = 0; i < numberStages; i++) {
             const match = ['Local team', 'Away team']
             matchStage.push(match)
         }
         newStage.push(matchStage)
     }
 
-    setFirstStageTeams(newStage) {
+    setFirstStageTeams(stage) {
         let teamIndex = 0
-        newStage[0].forEach(match => {
-            match[LOCAL_TEAM] = this.teams[teamIndex]
-            match[AWAY_TEAM] = this.teams[++teamIndex]
+        stage.forEach(match => {
+            match[LOCAL_TEAM] = this.teams[teamIndex].name
+            match[AWAY_TEAM] = this.teams[++teamIndex].name
             teamIndex++
         })
+    }
+
+    start() {
+        for (const stage of this.matchDaysStage) {
+            const stageResults = []
+            for (const match of stage) {
+                const result = this.play(match)
+                this.updateTeams(result)
+                stageResults.push(result)
+            }
+            // Calculate next stage
+            // this.getStandings()
+            // Guardar resumen de la jornada
+            this.summaries.push(stageResults)
+        }
+    }
+
+    generateGoals() {
+        return Math.round(Math.random() * 10)
+    }
+
+    play(match) {
+        let homeGoals = this.generateGoals()
+        let awayGoals = this.generateGoals()
+        while (true) { //if it is a draw let's play again
+            if (homeGoals == awayGoals) {
+                homeGoals = this.generateGoals()
+                awayGoals = this.generateGoals()
+            } else {
+                break
+            }
+        }
+
+        return {
+            homeTeam: match[LOCAL_TEAM],
+            homeGoals,
+            awayTeam: match[AWAY_TEAM],
+            awayGoals
+        }
+    }
+
+    updateTeams(result) {
+        const homeTeam = this.getTeamForName(result.homeTeam)
+        const awayTeam = this.getTeamForName(result.awayTeam)
+        if (homeTeam && awayTeam) {
+            homeTeam.goalsFor += result.homeGoals
+            homeTeam.goalsAgainst += result.awayGoals
+            awayTeam.goalsFor += result.awayGoals
+            awayTeam.goalsAgainst += result.homeGoals
+
+            if (result.homeGoals > result.awayGoals) {
+                this.updateTeamNext
+            } else if (result.homeGoals < result.awayGoals) {
+                awayTeam.hasWon = true
+            }
+        }
+    }
+
+    getWonTeam(result) {
+        let wonTeam
+        if (result.homeGoals > result.awayGoals) {
+            wonTeam = result.homeTeam
+        }
+        else {
+            wonTeam = result.awayTeam
+        }
+        return wonTeam
     }
 }
