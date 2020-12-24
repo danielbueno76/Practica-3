@@ -35,7 +35,9 @@ export default class KnockoutPhase {
         return {
             name: teamName,
             goalsFor: 0,
-            goalsAgainst: 0
+            goalsAgainst: 0,
+            matchesWon: 0,
+            matchesLost: 0
         }
     }
 
@@ -77,6 +79,7 @@ export default class KnockoutPhase {
     }
 
     start() {
+        let currentStage = 0
         for (const stage of this.matchDaysStage) {
             const stageResults = []
             for (const match of stage) {
@@ -84,10 +87,13 @@ export default class KnockoutPhase {
                 this.updateTeams(result)
                 stageResults.push(result)
             }
-            // Calculate next stage
-            // this.getStandings()
+            // Calculate next stage except final
+            if ((currentStage+1) != this.matchDaysStage.length) {
+                this.updateNextStage(currentStage+1, stageResults)
+            }
             // Guardar resumen de la jornada
             this.summaries.push(stageResults)
+            currentStage++
         }
     }
 
@@ -125,9 +131,11 @@ export default class KnockoutPhase {
             awayTeam.goalsAgainst += result.homeGoals
 
             if (result.homeGoals > result.awayGoals) {
-                this.updateTeamNext
+                homeTeam.matchesWon += 1
+                awayTeam.matchesLost += 1
             } else if (result.homeGoals < result.awayGoals) {
-                awayTeam.hasWon = true
+                homeTeam.matchesLost += 1
+                awayTeam.matchesWon += 1
             }
         }
     }
@@ -141,5 +149,18 @@ export default class KnockoutPhase {
             wonTeam = result.awayTeam
         }
         return wonTeam
+    }
+
+    updateNextStage(nextStage, stageResults) {
+        let teamIndex = 0
+        for(let i = 0; i < stageResults.length; i=i+2) {
+            const wonTeam1 = this.getWonTeam(stageResults[i])
+            const wonTeam2 = this.getWonTeam(stageResults[i+1])
+            const stage = this.matchDaysStage[nextStage]
+            const match = stage[teamIndex]
+            match[LOCAL_TEAM] = wonTeam1
+            match[AWAY_TEAM] = wonTeam2
+            teamIndex++
+        }
     }
 }
