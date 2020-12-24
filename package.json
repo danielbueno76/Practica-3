@@ -1,0 +1,20 @@
+{
+  "name": "practica-3",
+  "version": "1.0.0",
+  "description": "Para consolidar mis conocimientos de JavaScript, tendré que desarrollar un **simulador de la copa del mundo de fútbol**.\r Para los que no estén muy familiarizados con el deporte rey, se explicará a continuación el funcionamiento.\r El campeonato del mundo de fútbol lo disputan 32 equipos nacionales de fútbol y consta de dos fases: la fase de grupos y la fase de eliminatorias.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielbueno76/Practica-3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielbueno76/Practica-3/issues"
+  },
+  "homepage": "https://github.com/danielbueno76/Practica-3#readme",
+  "type": "module"
+}

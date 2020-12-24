@@ -1,0 +1,2 @@
+const teams = ["Brasil","Ecuador","Japon","Francia","Inglaterra","EEUU","Argentina","Holanda","Alemania","Islas Feroe","España","Jamaica","Portugal","Polonia","Suecia","Finlandia"]
+export {teams as worldCupTeams}
