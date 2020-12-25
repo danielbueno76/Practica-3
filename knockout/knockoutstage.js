@@ -100,6 +100,11 @@ export default class KnockoutPhase {
     }
 
     start() {
+        this.calculateWinStages()
+        this.calculateLoseStages() // Third and fourth position
+    }
+
+    calculateWinStages() {
         let currentStage = 0
         for (const stage of this.matchDaysStage) {
             const stageResults = []
@@ -123,7 +128,6 @@ export default class KnockoutPhase {
             currentStage++
         }
     }
-
     calculateLoseStages() {
         this.matchDaysLoseStage.forEach(stage => {
             const stageResults = []

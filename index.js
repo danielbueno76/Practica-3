@@ -38,7 +38,6 @@ console.log(`===============================================`)
 
 // Start the world cup
 worldCup.start()
-worldCup.calculateLoseStages() // Third and fourth position
 
 let i = worldCupTeams.length
 let wonTeam = undefined
