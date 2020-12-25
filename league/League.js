@@ -51,13 +51,12 @@ export default class League {
         const numberOfMatchDays = this.teams.length - 1
         const numberOfMatchesPerMatchDay = this.teams.length / 2
         for (let i = 0; i < numberOfMatchDays; i++) {
-            const matchDay = []  // jornada vacía
+            const matchDay = []
             for (let j = 0; j < numberOfMatchesPerMatchDay; j++) {
-                const match = ['Equipo local', 'Equipo visitante']  // partido
+                const match = ['Equipo local', 'Equipo visitante']
                 matchDay.push(match)
             }
-            // una vez añadidos todos los partidos a la jornada
-            round.push(matchDay)  // añadimos la jornada a la planificación
+            round.push(matchDay)  // add matches to the schedule
         }
     }
 
@@ -67,7 +66,7 @@ export default class League {
     
     getTeamNamesForSchedule() {
         const teamNames = this.getTeamNames()
-        if (teamNames.length % 2 == 0) { // son pares
+        if (teamNames.length % 2 == 0) { // pairs
             return teamNames
         } else {
             return [...teamNames, null]
@@ -78,9 +77,9 @@ export default class League {
         const teamNames = this.getTeamNamesForSchedule()
         const maxHomeTeams = teamNames.length - 2
         let teamIndex = 0
-        round.forEach(matchDay => { // por cada jornada
-            matchDay.forEach(match => { // por cada partido de cada jornada
-                // establecer el equipo local
+        round.forEach(matchDay => { // each schedule
+            matchDay.forEach(match => { // each match
+                // establish local team
                 match[LOCAL_TEAM] = teamNames[teamIndex]
                 teamIndex++
                 if (teamIndex > maxHomeTeams) {
@@ -88,15 +87,6 @@ export default class League {
                 }
             })
         })
-        /* Este código sería el equivalente al superior usando bucles clásicos
-        for (let i = 0; i < this.matchDaySchedule.length; i++) {
-            const matchDay = this.matchDaySchedule[i]
-            for (let j = 0; j < matchDay.length; j++) {
-                const match = matchDay[j]
-                // establecer equipo local
-            }
-        }
-        */
     }
 
     setAwayTeams(round) {
@@ -125,10 +115,10 @@ export default class League {
         const lastTeamName = teamNames[teamNames.length - 1]
         round.forEach(matchDay => {
             const firstMatch = matchDay[0]
-            if (matchDayNumber % 2 == 0) { // si jornada par -> juega en casa
+            if (matchDayNumber % 2 == 0) { // if the schedule is pair we are local
                 firstMatch[AWAY_TEAM] = firstMatch[LOCAL_TEAM]
                 firstMatch[LOCAL_TEAM] = lastTeamName
-            } else { // jornada impar -> juega fuera
+            } else { // if the schedule is even we are away team
                 firstMatch[AWAY_TEAM] = lastTeamName
             }
             matchDayNumber++
@@ -138,7 +128,7 @@ export default class League {
     scheduleMatchDays() {
         for (let i = 0; i < this.config.rounds; i++) {
             const newRound = this.createRound()
-            // si la jornada es par, invertir partidos
+            // If the schedule is pair, inverte matches
             if (i % 2 != 0) {
                 for (const matchDay of newRound) {
                     for (const match of matchDay) {
@@ -170,13 +160,13 @@ export default class League {
             }
             for (const match of matchDay) {
                 const result = this.play(match)
-                this.updateTeams(result)  // actualizamos los equipos con el resultado de partido
+                this.updateTeams(result)  // update the teams with the result of the match
                 matchDaySummary.results.push(result)
             }
-            // Calcular clasificación
+            // Calculate classification
             this.getStandings()
             matchDaySummary.standings = this.teams.map(team => Object.assign({}, team))
-            // Guardar resumen de la jornada
+            // Save summary of the schedule
             this.summaries.push(matchDaySummary)
         }
     }

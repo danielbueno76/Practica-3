@@ -46,27 +46,27 @@ export default class PointsBasedLeague extends League {
     }
 
     updateTeams(result) {
-        // buscar el equipo por su nombre en el array de equipos
+        // search the team by his name in the array of teams
         const homeTeam = this.getTeamForName(result.homeTeam)
         const awayTeam = this.getTeamForName(result.awayTeam)
-        if (homeTeam && awayTeam) { // si ecuentra ambos equipos
+        if (homeTeam && awayTeam) { // if we find both teams
 
             homeTeam.goalsFor += result.homeGoals
             homeTeam.goalsAgainst += result.awayGoals
             awayTeam.goalsFor += result.awayGoals
             awayTeam.goalsAgainst += result.homeGoals
 
-            if (result.homeGoals > result.awayGoals) { // gana equipo local
+            if (result.homeGoals > result.awayGoals) { // local team wins
                 homeTeam.points += this.config.pointsPerWin
                 homeTeam.matchesWon += 1
                 awayTeam.points += this.config.pointsPerLose
                 awayTeam.matchesLost += 1
-            } else if (result.homeGoals < result.awayGoals) { // gana equipo visitante
+            } else if (result.homeGoals < result.awayGoals) { // away team wins
                 homeTeam.points += this.config.pointsPerLose
                 homeTeam.matchesLost += 1
                 awayTeam.points += this.config.pointsPerWin
                 awayTeam.matchesWon += 1
-            } else { // empate
+            } else { // draw
                 homeTeam.points += this.config.pointsPerDraw
                 homeTeam.matchesDrawn += 1
                 awayTeam.points += this.config.pointsPerDraw
@@ -76,21 +76,41 @@ export default class PointsBasedLeague extends League {
     }
 
     getStandings() {
+        const summaries = this.summaries // I do not know why i cannot acces this.summaries inside of the function
         this.teams.sort(function(teamA, teamB) {
             if (teamA.points > teamB.points) {
                 return -1
             } else if (teamA.points < teamB.points) {
                 return 1
-            } else { // empatan a puntosç
-               const goalsDiffA = teamA.goalsFor - teamA.goalsAgainst
-               const goalsDiffB = teamB.goalsFor - teamB.goalsAgainst
-               if (goalsDiffA > goalsDiffB) {
-                   return -1
-               } else if (goalsDiffA < goalsDiffB) {
-                   return 1
-               } else {
-                   return 0
-               }
+            } else { // draw. first the team that has defeated the other
+                let wonTeam = undefined
+                summaries.forEach(matchDaySummary => {
+                    matchDaySummary.results.forEach(result => {
+                        if ((result.homeTeam == teamA.name && result.awayTeam == teamB.name) ||
+                            (result.awayTeam == teamA.name && result.homeTeam == teamB.name)) {
+                                if (result.homeGoals > result.awayGoals) {
+                                    wonTeam = result.homeTeam
+                                } else if (result.homeGoals < result.awayGoals) {
+                                    wonTeam = result.awayTeam
+                                }
+                            }
+                    })
+                })
+                if (teamA.name == wonTeam) {
+                    return -1
+                } else if (teamB.name == wonTeam) {
+                    return 1
+                } else { // difference of goals
+                    const goalsDiffA = teamA.goalsFor - teamA.goalsAgainst
+                    const goalsDiffB = teamB.goalsFor - teamB.goalsAgainst
+                    if (goalsDiffA > goalsDiffB) {
+                        return -1
+                    } else if (goalsDiffA < goalsDiffB) {
+                        return 1
+                    } else {
+                        return 0
+                    }
+                }
             }
         })
     }

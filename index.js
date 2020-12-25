@@ -1,6 +1,5 @@
 import {worldCupTeams, namesStages, namesLoseStages} from './utils/Utils.js'
-import WorldCupKnockout from './knockout/KnockoutStage.js'
-import { LOCAL_TEAM, AWAY_TEAM } from './knockout/KnockoutStage.js'
+import WorldCupKnockout from './knockout/KnockoutPhase.js'
 import WorldCupLeague from './league/WorldCupLeague.js'
 
 const config = { numberOfTeams: 4 } // Number of teams per group
@@ -39,7 +38,7 @@ console.log(`===============================================`)
 worldCupLeague.start()
 
 const numberOfSchedules = worldCupLeague.config.numberOfTeams-1
-for(let i = 0; i < numberOfSchedules; i++) {    
+for (let i = 0; i < numberOfSchedules; i++) {    
     worldCupLeague.groups.forEach(group => {
         const summary = group.summaries[i]
         console.log(`${group.name} - JORNADA ${i+1}:`)
@@ -62,29 +61,6 @@ const worldCupTeamsKnockout = worldCupLeague.getClassificatedTeams()
 const worldCup = new WorldCupKnockout('World Cup', worldCupTeamsKnockout)
 
 worldCup.scheduleStage()
-// Show the knockout stages although it is not mandatory. Just for clarification
-// let i = worldCupTeamsKnockout.length
-// worldCup.matchDaysStage.forEach(matchDay => {
-//     const stage = namesStages[i]
-    
-//     if (i in namesLoseStages) { // first show the stage of the teams that had been lost. In this example only third and fourth position.
-//         const stageLose = namesLoseStages[i]
-//         console.log(`===== ${stageLose} =====`)
-//         const matchLoseDay = worldCup.getLoseTeams(matchDay.length)
-//         matchLoseDay.forEach(match => {
-//             const home = match[LOCAL_TEAM]
-//             const away = match[AWAY_TEAM]
-//             console.log(`${home} vs ${away}`)
-//         })
-//     }
-//     console.log(`===== ${stage} =====`)
-//     matchDay.forEach(match => {
-//         const home = match[LOCAL_TEAM]
-//         const away = match[AWAY_TEAM]
-//         console.log(`${home} vs ${away}`)
-//     })
-//     i = i /2
-// })
 
 console.log(`===============================================`)
 console.log(`==== COMIENZO DE LA FASE DE ELIMINATORIAS =====`)

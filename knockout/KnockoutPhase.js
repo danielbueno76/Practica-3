@@ -137,8 +137,7 @@ export default class KnockoutPhase {
         let wonTeam
         if (result.homeGoals > result.awayGoals) {
             wonTeam = result.homeTeam
-        }
-        else {
+        } else {
             wonTeam = result.awayTeam
         }
         return wonTeam
@@ -148,8 +147,7 @@ export default class KnockoutPhase {
         let loseTeam
         if (result.homeGoals < result.awayGoals) {
             loseTeam = result.homeTeam
-        }
-        else {
+        } else {
             loseTeam = result.awayTeam
         }
         return loseTeam
@@ -157,7 +155,7 @@ export default class KnockoutPhase {
 
     updateNextWinStage(nextStage, stageResults) {
         let teamIndex = 0
-        for(let i = 0; i < stageResults.length; i=i+2) {
+        for (let i = 0; i < stageResults.length; i=i+2) {
             const wonTeam1 = this.getWonTeam(stageResults[i])
             const wonTeam2 = this.getWonTeam(stageResults[i+1])
             const stage = this.matchDaysStage[nextStage]
@@ -170,7 +168,7 @@ export default class KnockoutPhase {
 
     updateNextLoseStage(nextStage, stageResults) {
         let teamIndex = 0
-        for(let i = 0; i < stageResults.length; i=i+2) {
+        for (let i = 0; i < stageResults.length; i=i+2) {
             const loseTeam1 = this.getLoseTeam(stageResults[i])
             const loseTeam2 = this.getLoseTeam(stageResults[i+1])
             const stage = this.matchDaysLoseStage[nextStage]
