@@ -11,34 +11,17 @@ export default class KnockoutPhase {
         this.summariesLoseStages = []
     }
 
-    setupTeams(teamNames) {
-        this.teams = []
-        for (const teamName of teamNames) {
-            const team = this.customizeTeam(teamName)
-            this.teams.push(team)
-        }
-    }
-
-    customizeTeam(teamName) {
-        return {
-            name: teamName,
-            goalsFor: 0,
-            goalsAgainst: 0,
-            matchesWon: 0,
-            matchesLost: 0
-        }
-    }
-
-    getTeamForName(name) {
-        return this.teams.find(team => team.name == name)
+    setupTeams(teams) {
+        this.teams = teams
     }
 
     scheduleStage(){
         this.scheduleStageWin()
         this.scheduleStageLose()
     }
+    
     scheduleStageWin(){
-        for (let i = this.teams.length; i > 1 ; i=i/2) {
+        for (let i = (this.teams.length*2); i > 1 ; i=i/2) {
             const newStage = this.createStage(i/2)
 
             this.matchDaysStage = this.matchDaysStage.concat(newStage)
@@ -79,8 +62,8 @@ export default class KnockoutPhase {
     setFirstStageTeams(stage) {
         let teamIndex = 0
         stage.forEach(match => {
-            match[LOCAL_TEAM] = this.teams[teamIndex].name
-            match[AWAY_TEAM] = this.teams[++teamIndex].name
+            match[LOCAL_TEAM] = this.teams[teamIndex][LOCAL_TEAM]
+            match[AWAY_TEAM] = this.teams[teamIndex][AWAY_TEAM]
             teamIndex++
         })
     }
@@ -96,7 +79,6 @@ export default class KnockoutPhase {
             const stageResults = []
             for (const match of stage) {
                 const result = this.play(match)
-                this.updateTeams(result)
                 stageResults.push(result)
             }
             // Calculate next stage except final
@@ -119,7 +101,6 @@ export default class KnockoutPhase {
             const stageResults = []
             stage.forEach( match => {
                 const result = this.play(match)
-                this.updateTeams(result)
                 stageResults.push(result)
             })
 
@@ -149,25 +130,6 @@ export default class KnockoutPhase {
             homeGoals,
             awayTeam: match[AWAY_TEAM],
             awayGoals
-        }
-    }
-
-    updateTeams(result) {
-        const homeTeam = this.getTeamForName(result.homeTeam)
-        const awayTeam = this.getTeamForName(result.awayTeam)
-        if (homeTeam && awayTeam) {
-            homeTeam.goalsFor += result.homeGoals
-            homeTeam.goalsAgainst += result.awayGoals
-            awayTeam.goalsFor += result.awayGoals
-            awayTeam.goalsAgainst += result.homeGoals
-
-            if (result.homeGoals > result.awayGoals) {
-                homeTeam.matchesWon += 1
-                awayTeam.matchesLost += 1
-            } else if (result.homeGoals < result.awayGoals) {
-                homeTeam.matchesLost += 1
-                awayTeam.matchesWon += 1
-            }
         }
     }
 
