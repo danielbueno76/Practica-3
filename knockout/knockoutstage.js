@@ -18,6 +18,7 @@ export default class KnockoutPhase {
     constructor(name, teams=[]) {
         this.name = name
         this.matchDaysStage = []
+        this.matchDaysLoseStage = []
         this.setupTeams(teams)
         this.summaries = []
     }
@@ -46,12 +47,31 @@ export default class KnockoutPhase {
     }
 
     scheduleStage(){
+        this.scheduleStageWin()
+        this.scheduleStageLose()
+    }
+    scheduleStageWin(){
         for (let i = this.teams.length; i > 1 ; i=i/2) {
             const newStage = this.createStage(i/2)
 
             this.matchDaysStage = this.matchDaysStage.concat(newStage)
         }
         this.setFirstStageTeams(this.matchDaysStage[0])// In the first stage we assign the team names
+    }
+
+    scheduleStageLose(){
+        const newStageLose = this.createStage(1) // third and fourth position
+        this.matchDaysLoseStage = this.matchDaysLoseStage.concat(newStageLose)
+    }
+    
+    getLoseTeams(numberOfMatches) {
+        let matchDayLose = undefined
+        this.matchDaysLoseStage.forEach( matchDay => {
+            if (matchDay.length == numberOfMatches) {
+                matchDayLose = matchDay
+            }
+        })
+        return matchDayLose
     }
 
     createStage(numberStages) {
