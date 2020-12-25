@@ -49,20 +49,24 @@ export default class WorldCupLeague{
             const match = ["Equipo local", "Equipo visitante"]
             teamsMatches.push(match)
         }
+        const numberOfMatchesPerSide = teamsMatches.length / 2
         let index = 0
-        this.groups.forEach(group => {
-            const finalSummary = group.summaries[this.config.numberOfTeams-2]
-            const winnerGroup = finalSummary.standings[FIRST_TEAM].name
-            const secondGroup = finalSummary.standings[SECOND_TEAM].name
-            if (index % 2 == 0) {
-                teamsMatches[index][LOCAL_TEAM] = winnerGroup
-                teamsMatches[index+1][AWAY_TEAM] = secondGroup
-            } else {
-                teamsMatches[index-1][AWAY_TEAM] = secondGroup
-                teamsMatches[index][LOCAL_TEAM] = winnerGroup
-            }
+        for (let i = 0; i < this.groups.length;i=i+2) {
+            const group1 = this.groups[i]
+            const finalSummary1 = group1.summaries[this.config.numberOfTeams-2]
+            const winnerGroup1 = finalSummary1.standings[FIRST_TEAM].name
+            const secondGroup1 = finalSummary1.standings[SECOND_TEAM].name
+            teamsMatches[index][LOCAL_TEAM] = winnerGroup1
+            teamsMatches[index+numberOfMatchesPerSide][AWAY_TEAM] = secondGroup1
+            
+            const group2 = this.groups[i+1]
+            const finalSummary2 = group2.summaries[this.config.numberOfTeams-2]
+            const winnerGroup2 = finalSummary2.standings[FIRST_TEAM].name
+            const secondGroup2 = finalSummary2.standings[SECOND_TEAM].name
+            teamsMatches[index][AWAY_TEAM] = secondGroup2
+            teamsMatches[index+numberOfMatchesPerSide][LOCAL_TEAM] = winnerGroup2
             index++
-        })
+        }
         return teamsMatches
     }
 }

@@ -18,10 +18,6 @@ export default class PointsBasedLeague extends League {
 
     customizeTeam(teamName) {
         const customizedTeam = super.customizeTeam(teamName)
-        // customizedTeam.points = 0
-        // customizedTeam.goalsFor = 0
-        // customizedTeam.goalsAgainst = 0
-        // return customizedTeam
         return {
             points: 0,
             goalsFor: 0,
